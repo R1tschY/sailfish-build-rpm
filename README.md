@@ -2,7 +2,19 @@
 
 *Github Action for building RPMs for Sailfish*
 
+## Example
+
+```yaml
+- uses: R1tschY/sailfish-sdk-action@v1
+  with:
+    arch: "armv7hl"
+    release: "3.3.0.14"
+    fix-version: false
 ```
+For a example project look at https://github.com/R1tschY/sailfish-sdk-action-test
+
+## Usage
+```yaml
 - uses: R1tschY/sailfish-sdk-action@v1
   with:
     # Architecture to compile for (armv7hl or i486).
