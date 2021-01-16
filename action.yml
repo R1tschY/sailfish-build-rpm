@@ -1,6 +1,7 @@
 name: 'Sailfish SDK Build'
 author: "Richard Liebscher <r1tschy@posteo.de>"
 description: 'Build your RPM for Sailfish'
+
 inputs:
   arch:
     description: 'Architecture to compile for (armv7hl or i486)'
@@ -38,13 +39,25 @@ inputs:
     description: 'Overwrite version from git information (`true` or `false` are allowed) (see `mb2 --fix-version` for more information)'
     required: false
     default: ""
+
 outputs:
   rpm-dir: 
     description: "Folder with RPM artifacts"
     value: ${{ steps.script.outputs.rpm-dir }}
+
 runs:
   using: "composite"
   steps: 
     - id: script
       run: python3 ${{ github.action_path }}/script.py
       shell: bash
+      env:
+        INPUT_ARCH: ${{ inputs.arch }}
+        INPUT_RELEASE: ${{ inputs.release }}
+        INPUT_CHECK: ${{ inputs.check }}
+        INPUT_SOURCE_DIR: ${{ inputs.source-dir }}
+        INPUT_IMAGE: ${{ inputs.image }}
+        INPUT_ENABLE_DEBUG: ${{ inputs.enable-debug }}
+        INPUT_OUTPUT_DIR: ${{ inputs.output-dir }}
+        INPUT_SPECDIR: ${{ inputs.specfile }}
+        INPUT_FIX_VERSION: ${{ inputs.fix-version }}
