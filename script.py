@@ -105,6 +105,7 @@ def main():
         mb2.append("--no-fix-version")
 
     if output_dir:
+        os.makedirs(output_dir, mode=0o777, exist_ok=True)
         output_dir = fix_path(output_dir)
         mb2.append("--output-dir")
         mb2.append(output_dir)
@@ -125,11 +126,14 @@ def main():
     mb2.append("-j2")  # TODO: check for processor count
     mb2.append(source_dir)
 
-    subprocess.call([
+    retcode = subprocess.call([
         "docker", "run", "--rm", "--privileged",
         "--volume", f"{os.getcwd()}:/home/nemo/project",
         "--workdir", "/home/nemo/project",
         f"{image}:{release}"] + mb2)
+
+    if retcode != 0:
+        sys.exit(retcode)
 
 
 if __name__ == "__main__":
