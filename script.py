@@ -1,14 +1,36 @@
 #!/usr/bin/env python3
-import argparse
+
 import os
+import subprocess
 import sys
 from typing import Optional
 
 
 # Github Action Functions
+# https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions
 
-def set_output(id_: str, value: str):
-    print("::set-output name={}::{}".format(id_, value))
+def set_output(name: str, value: str):
+    print(f"::set-output name={name}::{value}")
+
+
+def debug(message: str):
+    print(f"::debug::{message}")
+
+
+def warning(message: str):
+    print(f"::warning::{message}")
+
+
+def error(message: str):
+    print(f"::error::{message}")
+
+
+def begin_group(title: str):
+    print(f"::group::{title}")
+
+
+def end_group():
+    print(f"::endgroup::")
 
 
 # Input
@@ -51,6 +73,15 @@ def read_bool_input(
         sys.exit(2)
 
 
+# Utils
+
+def fix_path(path):
+    if path.startswith(os.getcwd()):
+        return path.replace(os.getcwd(), "/home/nemo/project")
+    else:
+        return path
+
+
 def main():
     arch = read_str_input("arch", default="armv7hl")
     release = read_str_input("release", default="latest")
@@ -64,8 +95,41 @@ def main():
 
     print(locals())
 
+    target = f"SailfishOS-{release}-{arch}"
 
+    mb2 = ["mb2"]
 
+    if fix_version is True:
+        mb2.append("--fix-version")
+    elif fix_version is False:
+        mb2.append("--no-fix-version")
+
+    if output_dir:
+        output_dir = fix_path(output_dir)
+        mb2.append("--output-dir")
+        mb2.append(output_dir)
+
+    if specfile:
+        specfile = fix_path(specfile)
+        mb2.append("--specfile")
+        mb2.append(specfile)
+
+    mb2.append("build")
+
+    if enable_debug is True:
+        mb2.append("--enable-debug")
+
+    if enable_debug is True:
+        mb2.append("--enable-debug")
+
+    mb2.append("-j2")  # TODO: check for processor count
+    mb2.append(source_dir)
+
+    subprocess.call([
+        "docker", "run", "--rm", "--privileged",
+        "--volume", f"{os.getcwd()}:/home/nemo/project",
+        "--workdir", "/home/nemo/project",
+        f"{image}:{release}"] + mb2)
 
 
 if __name__ == "__main__":

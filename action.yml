@@ -18,7 +18,7 @@ inputs:
   source-dir:
     description: ''
     required: false
-    default: '.'
+    default: ''
   image:
     description: 'Basename of Docker image to use (name without tag)'
     required: false
