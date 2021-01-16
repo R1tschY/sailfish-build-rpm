@@ -1,0 +1,21 @@
+name: 'Sailfish SDK Build'
+description: 'Build your RPM for Sailfish'
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+outputs:
+  rpm-dir: 
+    description: "Folder with RPM artifacts"
+    value: ${{ steps.result.outputs.rpm-dir }}
+runs:
+  using: "composite"
+  steps: 
+    - run: echo Hello ${{ inputs.who-to-greet }}.
+      shell: bash
+    - id: result
+      run: echo "::set-output name=rpm-dir::RPM"
+      shell: bash
+    - run: ${{ github.action_path }}/goodbye.sh
+      shell: bash
