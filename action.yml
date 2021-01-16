@@ -9,8 +9,7 @@ inputs:
     default: 'armv7hl'
   release:
     description: 'Version of Sailfish to compile for (for example 3.3.0.14)'
-    required: false
-    default: 'latest'
+    required: true
   check:
     description: 'Perform quality checks. (See `mb2 check` for more information)'
     required: false
