@@ -86,8 +86,8 @@ def call(args, stdin: Optional[bytes] = None):
 
 
 def main():
-    arch = read_str_input("arch", default="armv7hl")
-    release = read_str_input("release", default="latest")
+    arch = read_str_input("arch", required=True)
+    release = read_str_input("release", required=True)
     check = read_bool_input("check", default=False)
     source_dir = read_str_input("source-dir")
     image = read_str_input("image", default="r1tschy/sailfishos-platform-sdk")

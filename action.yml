@@ -5,8 +5,7 @@ description: 'Build your RPM for Sailfish'
 inputs:
   arch:
     description: 'Architecture to compile for (armv7hl or i486)'
-    required: false
-    default: 'armv7hl'
+    required: true
   release:
     description: 'Version of Sailfish to compile for (for example 3.3.0.14)'
     required: true
