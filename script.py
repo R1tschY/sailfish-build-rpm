@@ -77,7 +77,6 @@ def read_bool_input(
 # Utils
 
 def call(args, stdin: Optional[bytes] = None):
-    print(args)
     proc = subprocess.run(args, input=stdin)
     if proc.returncode != 0:
         cmd = ' '.join(shlex.quote(arg) for arg in args)
@@ -100,8 +99,6 @@ def main():
     uid = os.getuid()
     cwd = os.getcwd()
     cusername = "mersdk"  # TODO: use nemo in coderus images
-
-    print(locals())
 
     # TODO: do only once when already modified
     # with group("Preparation"):
