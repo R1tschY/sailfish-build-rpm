@@ -76,17 +76,11 @@ def read_bool_input(
 
 # Utils
 
-def fix_path(path):
-    if path.startswith(os.getcwd()):
-        return path.replace(os.getcwd(), "/home/nemo/project")
-    else:
-        return path
-
-
 def call(args, stdin: Optional[bytes] = None):
     proc = subprocess.run(args, input=stdin)
     if proc.returncode != 0:
-        print(f"command failed with {proc.returncode}: {shlex.join(args)}",
+        cmd = ' '.join(shlex.quote(arg) for arg in args)
+        print(f"command failed with {proc.returncode}: {cmd}",
               file=sys.stderr)
         sys.exit(proc.returncode)
 
@@ -104,13 +98,14 @@ def main():
 
     uid = os.getuid()
     cwd = os.getcwd()
+    cusername = "mersdk"  # TODO: use nemo in coderus images
 
     # TODO: do only once when already modified
-    with group("Preparation"):
-        call(["docker", "build", "-t", f"{image}:{release}", "-"],
-             stdin=textwrap.dedent(f"""
-                FROM {image}:{release}
-                RUN sudo usermod -u {uid} nemo""").encode("utf-8"))
+    # with group("Preparation"):
+    #     call(["docker", "build", "-t", f"{image}:{release}", "-"],
+    #          stdin=textwrap.dedent(f"""
+    #             FROM {image}:{release}
+    #             RUN sudo usermod -u {uid} {cusername}""").encode("utf-8"))
 
     mb2_base = ["mb2"]
     if fix_version is True:
@@ -120,12 +115,15 @@ def main():
 
     if output_dir:
         os.makedirs(output_dir, mode=0o777, exist_ok=True)
-        output_dir = fix_path(output_dir)
+        if output_dir.startswith(cwd):
+            output_dir = output_dir.replace(cwd, f"/home/{cusername}/project")
+
         mb2_base.append("--output-dir")
         mb2_base.append(output_dir)
 
     if specfile:
-        specfile = fix_path(specfile)
+        if specfile.startswith(cwd):
+            specfile = specfile.replace(cwd, f"/home/{cusername}/project")
         mb2_base.append("--specfile")
         mb2_base.append(specfile)
 
@@ -144,8 +142,8 @@ def main():
             mb2_build.append(source_dir)
 
         call(["docker", "run", "--rm", "--privileged",
-              "--volume", f"{cwd}:/home/nemo/project",
-              "--workdir", "/home/nemo/project",
+              "--volume", f"{cwd}:/home/{cusername}/project",
+              "--workdir", "/home/{cusername}/project",
               f"{image}:{release}"] + mb2_build)
 
     if check:
@@ -154,8 +152,8 @@ def main():
             mb2_check.append("check")
 
             call(["docker", "run", "--rm", "--privileged",
-                  "--volume", f"{cwd}:/home/nemo/project",
-                  "--workdir", "/home/nemo/project",
+                  "--volume", f"{cwd}:/home/{cusername}/project",
+                  "--workdir", "/home/{cusername}/project",
                   f"{image}:{release}"] + mb2_check)
 
 
