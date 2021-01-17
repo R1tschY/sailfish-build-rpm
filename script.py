@@ -143,7 +143,7 @@ def main():
 
         call(["docker", "run", "--rm", "--privileged",
               "--volume", f"{cwd}:/home/{cusername}/project",
-              "--workdir", "/home/{cusername}/project",
+              "--workdir", f"/home/{cusername}/project",
               f"{image}:{release}"] + mb2_build)
 
     if check:
@@ -153,7 +153,7 @@ def main():
 
             call(["docker", "run", "--rm", "--privileged",
                   "--volume", f"{cwd}:/home/{cusername}/project",
-                  "--workdir", "/home/{cusername}/project",
+                  "--workdir", f"/home/{cusername}/project",
                   f"{image}:{release}"] + mb2_check)
 
 
