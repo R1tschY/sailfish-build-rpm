@@ -133,31 +133,29 @@ def main():
     mb2_base.append("-t")
     mb2_base.append(f"SailfishOS-{release}-{arch}")
 
-    with group("Build RPM"):
-        mb2_build = mb2_base.copy()
-        mb2_build.append("build")
+    mb2_build = mb2_base.copy()
+    mb2_build.append("build")
 
-        if enable_debug is True:
-            mb2_build.append("--enable-debug")
+    if enable_debug is True:
+        mb2_build.append("--enable-debug")
 
-        mb2_build.append("-j2")  # TODO: check for processor count
-        if source_dir:
-            mb2_build.append(source_dir)
+    mb2_build.append("-j2")  # TODO: check for processor count
+    if source_dir:
+        mb2_build.append(source_dir)
 
-        call(["docker", "run", "--rm", "--privileged",
-              "--volume", f"{cwd}:/home/{cusername}/project",
-              "--workdir", f"/home/{cusername}/project",
-              f"{image}:{release}"] + mb2_build)
+    call(["docker", "run", "--rm", "--privileged",
+            "--volume", f"{cwd}:/home/{cusername}/project",
+            "--workdir", f"/home/{cusername}/project",
+            f"{image}:{release}"] + mb2_build)
 
     if check:
-        with group("Check RPM"):
-            mb2_check = mb2_base.copy()
-            mb2_check.append("check")
+        mb2_check = mb2_base.copy()
+        mb2_check.append("check")
 
-            call(["docker", "run", "--rm", "--privileged",
-                  "--volume", f"{cwd}:/home/{cusername}/project",
-                  "--workdir", f"/home/{cusername}/project",
-                  f"{image}:{release}"] + mb2_check)
+        call(["docker", "run", "--rm", "--privileged",
+                "--volume", f"{cwd}:/home/{cusername}/project",
+                "--workdir", f"/home/{cusername}/project",
+                f"{image}:{release}"] + mb2_check)
 
 
 if __name__ == "__main__":
