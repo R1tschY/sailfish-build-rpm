@@ -27,6 +27,11 @@ def error(message: str):
     print(f"::error::{message}")
 
 
+def set_failed(message: str)
+    error(message)
+    sys.exit(1)
+
+
 @contextlib.contextmanager
 def group(title: str):
     print(f"::group::{title}", flush=True)
@@ -51,8 +56,7 @@ def read_str_input(
         return value
     else:
         if required:
-            print(f"Input `{name}` is required", file=sys.stderr)
-            sys.exit(2)
+            set_failed(f"Input `{name}` is required")
         return default
 
 
@@ -69,20 +73,17 @@ def read_bool_input(
     elif value == "false":
         return False
     else:
-        print(f"Value of input `{name}` is not `true` or `false`",
-              file=sys.stderr)
-        sys.exit(2)
+        set_failed(f"Value of input `{name}` is not `true` or `false`")
 
 
 # Utils
 
 def call(args, stdin: Optional[bytes] = None):
+    cmd = ' '.join(shlex.quote(arg) for arg in args)
+    print(f"{cmd}", flush=True)
     proc = subprocess.run(args, input=stdin)
     if proc.returncode != 0:
-        cmd = ' '.join(shlex.quote(arg) for arg in args)
-        print(f"command failed with {proc.returncode}: {cmd}",
-              file=sys.stderr)
-        sys.exit(proc.returncode)
+        set_failed(f"command failed with {proc.returncode}: {cmd}")
 
 
 def main():
@@ -104,6 +105,9 @@ def main():
         "--volume", f"{cwd}:/home/{cusername}/project",
         "--workdir", f"/home/{cusername}/project",
         tagged_image]
+
+    with group(f"Pull image {tagged_image}"):
+        call(["docker", "image", "pull", tagged_image])
 
     # TODO: do only once when already modified
     # with group("Preparation"):
