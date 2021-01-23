@@ -4,18 +4,18 @@ import shlex
 import subprocess
 from typing import Optional
 
-from action import group, read_str_input, set_failed
+from action import get_input, group, set_failed
 
 
 # Input
 
 
-def read_bool_input(
+def get_bool_input(
         name: str,
         required: bool = False,
         default: Optional[bool] = None
 ) -> Optional[bool]:
-    value = read_str_input(name, required)
+    value = get_input(name, required)
     if not value:
         return default
     elif value == "true":
@@ -37,15 +37,15 @@ def call(args, stdin: Optional[bytes] = None):
 
 
 def main():
-    arch = read_str_input("arch", required=True)
-    release = read_str_input("release", required=True)
-    check = read_bool_input("check", default=False)
-    source_dir = read_str_input("source-dir")
-    image = read_str_input("image", default="r1tschy/sailfishos-platform-sdk")
-    enable_debug = read_bool_input("enable-debug", default=False)
-    output_dir = read_str_input("output-dir")
-    specfile = read_str_input("specfile")
-    fix_version = read_bool_input("fix-version")
+    arch = get_input("arch", required=True)
+    release = get_input("release", required=True)
+    check = get_bool_input("check", default=False)
+    source_dir = get_input("source-dir")
+    image = get_input("image", default="r1tschy/sailfishos-platform-sdk")
+    enable_debug = get_bool_input("enable-debug", default=False)
+    output_dir = get_input("output-dir")
+    specfile = get_input("specfile")
+    fix_version = get_bool_input("fix-version")
 
     uid = os.getuid()
     cwd = os.getcwd()
