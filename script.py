@@ -99,6 +99,7 @@ def main():
     uid = os.getuid()
     cwd = os.getcwd()
     cusername = "mersdk"  # TODO: use nemo in coderus images
+    tagged_image = f"{image}:{release}-{arch}"
 
     # TODO: do only once when already modified
     # with group("Preparation"):
@@ -143,7 +144,7 @@ def main():
     call(["docker", "run", "--rm", "--privileged",
             "--volume", f"{cwd}:/home/{cusername}/project",
             "--workdir", f"/home/{cusername}/project",
-            f"{image}:{release}"] + mb2_build)
+            tagged_image] + mb2_build)
 
     if check:
         mb2_check = mb2_base.copy()
@@ -152,7 +153,7 @@ def main():
         call(["docker", "run", "--rm", "--privileged",
                 "--volume", f"{cwd}:/home/{cusername}/project",
                 "--workdir", f"/home/{cusername}/project",
-                f"{image}:{release}"] + mb2_check)
+                tagged_image] + mb2_check)
 
 
 if __name__ == "__main__":
