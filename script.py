@@ -100,6 +100,10 @@ def main():
     cwd = os.getcwd()
     cusername = "mersdk"  # TODO: use nemo in coderus images
     tagged_image = f"{image}:{release}-{arch}"
+    docker_args = ["docker", "run", "--rm", "--privileged",
+        "--volume", f"{cwd}:/home/{cusername}/project",
+        "--workdir", f"/home/{cusername}/project",
+        tagged_image]
 
     # TODO: do only once when already modified
     # with group("Preparation"):
@@ -108,31 +112,30 @@ def main():
     #             FROM {image}:{release}
     #             RUN sudo usermod -u {uid} {cusername}""").encode("utf-8"))
 
-    mb2_base = ["mb2"]
+    mb2_args = ["mb2"]
     if fix_version is True:
-        mb2_base.append("--fix-version")
+        mb2_args.append("--fix-version")
     elif fix_version is False:
-        mb2_base.append("--no-fix-version")
+        mb2_args.append("--no-fix-version")
 
     if output_dir:
         os.makedirs(output_dir, mode=0o777, exist_ok=True)
         if output_dir.startswith(cwd):
             output_dir = output_dir.replace(cwd, f"/home/{cusername}/project")
 
-        mb2_base.append("--output-dir")
-        mb2_base.append(output_dir)
+        mb2_args.append("--output-dir")
+        mb2_args.append(output_dir)
 
     if specfile:
         if specfile.startswith(cwd):
             specfile = specfile.replace(cwd, f"/home/{cusername}/project")
-        mb2_base.append("--specfile")
-        mb2_base.append(specfile)
+        mb2_args.append("--specfile")
+        mb2_args.append(specfile)
 
-    mb2_base.append("-t")
-    mb2_base.append(f"SailfishOS-{release}-{arch}")
+    mb2_args.append("-t")
+    mb2_args.append(f"SailfishOS-{release}-{arch}")
 
-    mb2_build = mb2_base.copy()
-    mb2_build.append("build")
+    mb2_build = ["build"]
 
     if enable_debug is True:
         mb2_build.append("--enable-debug")
@@ -141,19 +144,9 @@ def main():
     if source_dir:
         mb2_build.append(source_dir)
 
-    call(["docker", "run", "--rm", "--privileged",
-            "--volume", f"{cwd}:/home/{cusername}/project",
-            "--workdir", f"/home/{cusername}/project",
-            tagged_image] + mb2_build)
-
+    call(docker_args + mb2_args + mb2_build)
     if check:
-        mb2_check = mb2_base.copy()
-        mb2_check.append("check")
-
-        call(["docker", "run", "--rm", "--privileged",
-                "--volume", f"{cwd}:/home/{cusername}/project",
-                "--workdir", f"/home/{cusername}/project",
-                tagged_image] + mb2_check)
+        call(docker_args + mb2_args + ["check"])
 
 
 if __name__ == "__main__":
