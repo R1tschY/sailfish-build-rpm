@@ -140,7 +140,7 @@ def main():
     if enable_debug is True:
         mb2_build.append("--enable-debug")
 
-    mb2_build.append("-j2")  # TODO: check for processor count
+    mb2_build.append(f"-j{len(os.sched_getaffinity(0))}")
     if source_dir:
         mb2_build.append(source_dir)
 
