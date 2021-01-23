@@ -30,7 +30,7 @@ def read_bool_input(
 
 def call(args, stdin: Optional[bytes] = None):
     cmd = ' '.join(shlex.quote(arg) for arg in args)
-    print(f"{cmd}", flush=True)
+    print(f"[command]{cmd}", flush=True)
     with stop_commands():
         proc = subprocess.run(args, input=stdin)
     if proc.returncode != 0:
