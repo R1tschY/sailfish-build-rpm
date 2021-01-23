@@ -4,7 +4,7 @@ import shlex
 import subprocess
 from typing import Optional
 
-from action import group, read_str_input, set_failed, stop_commands
+from action import group, read_str_input, set_failed
 
 
 # Input
@@ -31,8 +31,7 @@ def read_bool_input(
 def call(args, stdin: Optional[bytes] = None):
     cmd = ' '.join(shlex.quote(arg) for arg in args)
     print(f"[command]{cmd}", flush=True)
-    with stop_commands():
-        proc = subprocess.run(args, input=stdin)
+    proc = subprocess.run(args, input=stdin)
     if proc.returncode != 0:
         set_failed(f"command failed with {proc.returncode}: {cmd}")
 

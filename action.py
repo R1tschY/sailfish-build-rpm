@@ -1,7 +1,6 @@
 import contextlib
 import os
 import sys
-import uuid
 from typing import Optional
 
 # Github Action Functions
@@ -38,14 +37,6 @@ def group(title: str):
     print(f"::group::{title}", flush=True)
     yield
     print(f"::endgroup::", flush=True)
-
-
-@contextlib.contextmanager
-def stop_commands():
-    endtoken = uuid.uuid4().hex
-    print(f"::stop-commands::{endtoken}", flush=True)
-    yield
-    print(f"::{endtoken}::", flush=True)
 
 
 def read_str_input(
