@@ -16,15 +16,19 @@ def set_output(name: str, value: str):
 
 
 def debug(message: str):
-    print(f"::debug::{message}")
+    print(f"::debug::{message}", flush=True)
+
+
+def info(message: str):
+    print(message, flush=True)
 
 
 def warning(message: str):
-    print(f"::warning::{message}")
+    print(f"::warning::{message}", flush=True)
 
 
 def error(message: str):
-    print(f"::error::{message}")
+    print(f"::error::{message}", flush=True)
 
 
 def set_failed(message: str):
@@ -96,6 +100,7 @@ def call(args, stdin: Optional[bytes] = None):
 
 
 def main():
+    print(os.environ)
     arch = read_str_input("arch", required=True)
     release = read_str_input("release", required=True)
     check = read_bool_input("check", default=False)
@@ -105,7 +110,6 @@ def main():
     output_dir = read_str_input("output-dir")
     specfile = read_str_input("specfile")
     fix_version = read_bool_input("fix-version")
-    print(os.environ)
 
     uid = os.getuid()
     cwd = os.getcwd()
