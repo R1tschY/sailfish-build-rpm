@@ -100,7 +100,6 @@ def call(args, stdin: Optional[bytes] = None):
 
 
 def main():
-    print(os.environ)
     arch = read_str_input("arch", required=True)
     release = read_str_input("release", required=True)
     check = read_bool_input("check", default=False)

@@ -49,3 +49,13 @@ runs:
     - id: script
       run: python3 ${{ github.action_path }}/script.py
       shell: bash
+      env:
+        INPUT_ARCH: ${{ inputs.arch }}
+        INPUT_RELEASE: ${{ inputs.release }}
+        INPUT_CHECK: ${{ inputs.check }}
+        INPUT_SOURCE_DIR: ${{ inputs.source-dir }}
+        INPUT_IMAGE: ${{ inputs.image }}
+        INPUT_ENABLE_DEBUG: ${{ inputs.enable-debug }}
+        INPUT_OUTPUT_DIR: ${{ inputs.output-dir }}
+        INPUT_SPECDIR: ${{ inputs.specfile }}
+        INPUT_FIX_VERSION: ${{ inputs.fix-version }}
