@@ -27,7 +27,7 @@ def error(message: str):
     print(f"::error::{message}")
 
 
-def set_failed(message: str)
+def set_failed(message: str):
     error(message)
     sys.exit(1)
 
