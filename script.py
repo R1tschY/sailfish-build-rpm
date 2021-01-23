@@ -105,12 +105,14 @@ def main():
     output_dir = read_str_input("output-dir")
     specfile = read_str_input("specfile")
     fix_version = read_bool_input("fix-version")
+    print(os.environ)
 
     uid = os.getuid()
     cwd = os.getcwd()
     cusername = "mersdk"  # TODO: use nemo in coderus images
     tagged_image = f"{image}:{release}-{arch}"
-    docker_args = ["docker", "run", "--rm", "--privileged",
+    docker_args = [
+        "docker", "run", "--rm", "--privileged",
         "--volume", f"{cwd}:/home/{cusername}/project",
         "--workdir", f"/home/{cusername}/project",
         tagged_image]
