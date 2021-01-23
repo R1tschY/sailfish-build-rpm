@@ -31,7 +31,7 @@ For a example project look at https://github.com/R1tschY/sailfish-sdk-action-tes
     source-dir: ""
     
     # Basename of Docker image to use (name without tag)
-    # Default: r1tschy/sailfishos-platform-sdk
+    # Default: ghcr.io/r1tschy/sailfishos-platform-sdk
     image: ""
     
     # Enable debug build (passes --enabled-debug to mb2)

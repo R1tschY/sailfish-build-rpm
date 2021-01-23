@@ -20,7 +20,7 @@ inputs:
   image:
     description: 'Basename of Docker image to use (name without tag)'
     required: false
-    default: 'r1tschy/sailfishos-platform-sdk'
+    default: 'ghcr.io/r1tschy/sailfishos-platform-sdk'
   enable-debug:
     description: 'Enable debug build (passes --enabled-debug to mb2)'
     required: false

@@ -41,7 +41,7 @@ def main():
     release = get_input("release", required=True)
     check = get_bool_input("check", default=False)
     source_dir = get_input("source-dir")
-    image = get_input("image", default="r1tschy/sailfishos-platform-sdk")
+    image = get_input("image", default="ghcr.io/r1tschy/sailfishos-platform-sdk")
     enable_debug = get_bool_input("enable-debug", default=False)
     output_dir = get_input("output-dir")
     specfile = get_input("specfile")
