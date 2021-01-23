@@ -4,7 +4,7 @@ import os
 import shlex
 import subprocess
 import sys
-import textwrap
+import uuid
 from typing import Optional
 
 
@@ -37,6 +37,14 @@ def group(title: str):
     print(f"::group::{title}", flush=True)
     yield
     print(f"::endgroup::", flush=True)
+
+
+@contextlib.contextmanager
+def stop_commands():
+    endtoken = uuid.uuid4().hex
+    print(f"::stop-commands::{endtoken}", flush=True)
+    yield
+    print(f"::{endtoken}::", flush=True)
 
 
 # Input
@@ -81,7 +89,8 @@ def read_bool_input(
 def call(args, stdin: Optional[bytes] = None):
     cmd = ' '.join(shlex.quote(arg) for arg in args)
     print(f"{cmd}", flush=True)
-    proc = subprocess.run(args, input=stdin)
+    with stop_commands():
+        proc = subprocess.run(args, input=stdin)
     if proc.returncode != 0:
         set_failed(f"command failed with {proc.returncode}: {cmd}")
 
