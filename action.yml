@@ -38,11 +38,6 @@ inputs:
     required: false
     default: ""
 
-outputs:
-  rpm-dir: 
-    description: "Folder with RPM artifacts"
-    value: ${{ steps.script.outputs.rpm-dir }}
-
 runs:
   using: "composite"
   steps: 
