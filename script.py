@@ -43,7 +43,7 @@ def main():
     source_dir = get_input("source-dir")
     image = get_input("image", default="ghcr.io/r1tschy/sailfishos-platform-sdk")
     enable_debug = get_bool_input("enable-debug", default=False)
-    output_dir = get_input("output-dir")
+    output_dir = get_input("output-dir", default="./RPMS")
     specfile = get_input("specfile")
     fix_version = get_bool_input("fix-version")
 
@@ -67,29 +67,44 @@ def main():
     #             FROM {image}:{release}
     #             RUN sudo usermod -u {uid} {cusername}""").encode("utf-8"))
 
+    # Fix rights
+    os.chmod(cwd, mode=0o777)
+
     mb2_args = ["mb2"]
+
+    # Fix version
     if fix_version is True:
         mb2_args.append("--fix-version")
     elif fix_version is False:
         mb2_args.append("--no-fix-version")
 
-    if output_dir:
-        os.makedirs(output_dir, mode=0o777, exist_ok=True)
-        if output_dir.startswith(cwd):
-            output_dir = output_dir.replace(cwd, f"/home/{cusername}/project")
+    # Output dir
+    if not os.path.isabs(output_dir):
+        output_dir = os.path.abspath(output_dir)
 
-        mb2_args.append("--output-dir")
-        mb2_args.append(output_dir)
+    os.makedirs(output_dir, mode=0o777, exist_ok=True)
+    os.chmod(output_dir, mode=0o777)
 
+    if output_dir.startswith(cwd):
+        output_dir = output_dir.replace(cwd, f"/home/{cusername}/project", 1)
+    else:
+        set_failed("output_dir outside of project directory not supported")
+
+    mb2_args.append("--output-dir")
+    mb2_args.append(output_dir)
+
+    # Spec file
     if specfile:
         if specfile.startswith(cwd):
             specfile = specfile.replace(cwd, f"/home/{cusername}/project")
         mb2_args.append("--specfile")
         mb2_args.append(specfile)
 
+    # Target
     mb2_args.append("-t")
     mb2_args.append(f"SailfishOS-{release}-{arch}")
 
+    # Build args
     mb2_build = ["build"]
 
     if enable_debug is True:
@@ -99,6 +114,7 @@ def main():
     if source_dir:
         mb2_build.append(source_dir)
 
+    # Workflow
     call(docker_args + mb2_args + mb2_build)
     if check:
         call(docker_args + mb2_args + ["check"])
