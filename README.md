@@ -13,7 +13,7 @@ This project uses mb2 in [dockerized](https://github.com/R1tschY/docker-sailfish
     release: "4.1.0.24"
     fix-version: false
 ```
-For a example project look at https://github.com/R1tschY/sailfish-sdk-action-test
+For a example project look at https://github.com/R1tschY/sailfish-build-rpm-test
 
 ## Usage
 ```yaml
@@ -68,7 +68,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - id: build
-      uses: R1tschY/sailfish-sdk-action@v1
+      uses: R1tschY/sailfish-build-rpm@v1
       with:
         arch: 'armv7hl'
         release: '4.1.0.24'
